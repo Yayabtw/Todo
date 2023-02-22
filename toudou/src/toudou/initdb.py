@@ -37,22 +37,36 @@ def select_all():
         return result.all()
 
 
-def select_todo(todo) -> None:
+def select_todo(task) -> None:
     stmt = (
         select(todo_table).
-        where(todo_table.c.task == todo)
+        where(todo_table.c.task == task)
     )
     with engine.connect() as conn:
         conn.execute(stmt)
         conn.commit()
 
 
-def remove(todo) -> None:
+def remove(id) -> None:
     stmt = (
         delete(todo_table).
-        where(todo_table.c.task == todo)
+        where(todo_table.c.id == id)
     )
     with engine.connect() as conn:
         conn.execute(stmt)
         conn.commit()
 
+
+def update(id, task, complete, due) -> None:
+    stmt = (
+        update(todo_table).
+        where(todo_table.c.id == id).
+        values(
+            task=task,
+            complete=complete,
+            due=due
+        )
+    )
+    with engine.connect() as conn:
+        conn.execute(stmt)
+        conn.commit()
